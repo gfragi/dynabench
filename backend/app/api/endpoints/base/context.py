@@ -54,6 +54,15 @@ async def get_generative_contexts(model: GetGenerativeContextRequest):
 
 @router.post("/stream")
 async def stream_images(model_info: GetGenerativeContextRequest):
+    """
+    Stream images asynchronously.
+
+    Args:
+        model_info (GetGenerativeContextRequest): The model information.
+
+    Returns:
+        EventSourceResponse: The response containing the streamed images.
+    """
     async def event_generator():
         iterations = 0
         for _ in range(model_info.artifacts["num_batches"]):
