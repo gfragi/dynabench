@@ -1,39 +1,22 @@
 import GeneralButton from "new_front/components/Buttons/GeneralButton";
 import BasicInput from "new_front/components/Inputs/BasicInput";
 import EvaluateText from "new_front/components/Inputs/EvaluateText";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import { PacmanLoader } from "react-spinners";
 import useFetch from "use-http";
 import Swal from "sweetalert2";
-import { ChatHistoryType } from "new_front/types/createSamples/createSamples/utils";
+import { ChatbotProps } from "new_front/types/createSamples/createSamples/utils";
 import { Avatar } from "components/Avatar/Avatar";
 import parse from "html-react-parser";
-
-type ChatbotProps = {
-  instructions: string;
-  chatHistory: ChatHistoryType;
-  username: string;
-  model_name: string;
-  provider: string;
-  num_of_samples_chatbot: number;
-  num_interactions_chatbot: number;
-  finishConversation: boolean;
-  optionsSlider?: string[];
-  setChatHistory: (chatHistory: ChatHistoryType) => void;
-  showOriginalInteractions: () => void;
-  setFinishConversation: (finishConversation: boolean) => void;
-  updateModelInputs: (modelInputs: any) => void;
-  setIsGenerativeContext: (isGenerativeContext: boolean) => void;
-};
 
 const Chatbot: FC<ChatbotProps> = ({
   instructions,
   chatHistory,
   username,
-  model_name,
+  modelName,
   provider,
-  num_of_samples_chatbot,
-  num_interactions_chatbot,
+  numOfSamplesChatbot,
+  numInteractionsChatbot,
   finishConversation,
   optionsSlider,
   setChatHistory,
@@ -61,15 +44,18 @@ const Chatbot: FC<ChatbotProps> = ({
             user: [
               ...chatHistory.user,
               {
-                id: chatHistory.bot[chatHistory.bot.length - 1].id + 1,
+                id:
+                  chatHistory.bot.length > 0
+                    ? chatHistory.bot[chatHistory.bot.length - 1].id + 1
+                    : 1,
                 text: prompt,
               },
             ],
           },
-          model_name: model_name,
+          model_name: modelName,
           provider: provider,
           prompt: prompt,
-          num_answers: num_of_samples_chatbot,
+          num_answers: numOfSamplesChatbot,
         },
       );
       if (response.ok) {
@@ -124,14 +110,19 @@ const Chatbot: FC<ChatbotProps> = ({
       user: [
         ...chatHistory.user,
         {
-          id: chatHistory.user[chatHistory.user.length - 1].id + 1,
+          id: chatHistory.user.length
+            ? chatHistory.user[chatHistory.user.length - 1].id + 1
+            : 1,
           text: prompt,
         },
       ],
       bot: [
         ...chatHistory.bot,
         {
-          id: chatHistory.bot[chatHistory.bot.length - 1].id + 1,
+          id:
+            chatHistory.bot.length > 0
+              ? chatHistory.bot[chatHistory.bot.length - 1].id + 1
+              : 1,
           text: newRespones.reduce(
             (max: { score: number }, answer: { score: number }) =>
               answer.score > max.score ? answer : max,
@@ -191,7 +182,7 @@ const Chatbot: FC<ChatbotProps> = ({
     showOriginalInteractions();
     finishSection();
     setIsGenerativeContext(false);
-    setFinishConversation(true);
+    // setFinishConversation(true);
   };
 
   return (
@@ -303,7 +294,7 @@ const Chatbot: FC<ChatbotProps> = ({
                           className="px-4 py-1 font-semibold border-0 font-weight-bold light-gray-bg task-action-btn "
                         />
                       </div>
-                      {numInteractions >= num_interactions_chatbot && (
+                      {numInteractions >= numInteractionsChatbot && (
                         <div>
                           <GeneralButton
                             onClick={handleFinishInteraction}

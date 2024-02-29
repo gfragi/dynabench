@@ -1,28 +1,24 @@
-import React, { useState } from "react";
-import {
-  Form as BootstrapForm,
-  Button,
-  Card,
-  Col,
-  Container,
-  Row,
-} from "react-bootstrap";
-import { useForm } from "react-hook-form";
 import FileUpload from "new_front/components/DragAndDrop/FileUpload";
+import React, { useState } from "react";
+import { Form as BootstrapForm, Button } from "react-bootstrap";
+import { useForm } from "react-hook-form";
+import Select from "react-select";
+import { LanguagePair } from "new_front/types/uploadModel/uploadModel";
 
 interface CreateModelProps {
   isDynalab: boolean;
-  languagePairs?: any;
+  languagePairs?: LanguagePair[];
   handleClose: () => void;
   handleSubmitModel: (values: any) => void;
 }
 
 const CreateModel = ({
   isDynalab,
-  languagePairs,
+  languagePairs = [],
   handleClose,
   handleSubmitModel,
 }: CreateModelProps) => {
+  const [selectedLanguages, setSelectedLanguages] = useState<any>([]);
   const initState = {
     modelName: " ",
     desc: " ",
@@ -33,7 +29,26 @@ const CreateModel = ({
     repoUrl: " ",
   };
 
+  const options = languagePairs.map((pair, index) => {
+    return {
+      value: `option${index + 1}`,
+      label: pair.alias,
+      dataset_name: pair.dataset_name,
+    };
+  });
+
   const onSubmit = (values: any) => {
+    if (languagePairs && languagePairs.length > 0) {
+      // Extract dataset_name based on the selected alias
+      const selectedDatasets = selectedLanguages.map((lang: any) => {
+        const pair = languagePairs.find(
+          (pair: any) => pair.alias === lang.label,
+        );
+        return pair ? pair.dataset_name : "";
+      });
+      values.languages = selectedDatasets.join(", "); // Save dataset_names
+    }
+
     console.log("values", values);
 
     handleSubmitModel(values);
@@ -87,35 +102,28 @@ const CreateModel = ({
             {...register("numParams")}
           />
         </BootstrapForm.Group>
-        {languagePairs && languagePairs.length > 0 ? (
+        {languagePairs && languagePairs.length > 0 && (
           <>
-            <BootstrapForm.Group className="mb-3" controlId="languages">
+            <BootstrapForm.Group
+              className="flex flex-col items-center justify-center mb-3"
+              controlId="languages"
+            >
               <BootstrapForm.Label className="text-base">
                 Languages
               </BootstrapForm.Label>
-              <BootstrapForm.Control
-                as="select"
-                multiple
-                {...register("languages")}
-              >
-                {/* Create a multiselect dropdown */}
-                {languagePairs.map((lang: any) => (
-                  <option value={lang}>{lang}</option>
-                ))}
-              </BootstrapForm.Control>
+              <div className="min-w-full text-letter-color">
+                <Select
+                  isMulti
+                  options={options}
+                  {...register("languages")}
+                  closeMenuOnSelect={false}
+                  onChange={(selectedOption: any) => {
+                    setSelectedLanguages(selectedOption);
+                  }}
+                />
+              </div>
             </BootstrapForm.Group>
           </>
-        ) : (
-          <BootstrapForm.Group className="mb-3" controlId="languages">
-            <BootstrapForm.Label className="text-base">
-              Languages (optional)
-            </BootstrapForm.Label>
-            <BootstrapForm.Control
-              placeholder="Languages"
-              autoFocus
-              {...register("languages")}
-            />
-          </BootstrapForm.Group>
         )}
         <BootstrapForm.Group className="mb-3" controlId="license">
           <BootstrapForm.Label className="text-base">

@@ -71,7 +71,7 @@ const EvaluateTextsGenerative: FC<
   };
 
   const checkIfUserIsSignedInConsent = async () => {
-    const signConsent = await post("/task/check_sign_consent", {
+    const signConsent = await post("/task/check_signed_consent", {
       user_id: user.id,
       task_id: taskId,
     });
@@ -410,10 +410,10 @@ const EvaluateTextsGenerative: FC<
                   instructions={artifactsInput.general_instruction_chatbot}
                   chatHistory={chatHistory}
                   username={user.username}
-                  model_name={bestAnswer.model_name}
+                  modelName={bestAnswer.model_name}
                   provider={bestAnswer.provider}
-                  num_of_samples_chatbot={artifactsInput.num_of_samples_chatbot}
-                  num_interactions_chatbot={
+                  numOfSamplesChatbot={artifactsInput.num_of_samples_chatbot}
+                  numInteractionsChatbot={
                     artifactsInput.num_interactions_chatbot
                   }
                   finishConversation={finishConversation}
