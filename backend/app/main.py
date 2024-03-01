@@ -26,6 +26,8 @@ from app.api.endpoints.base import (
 )
 from app.api.endpoints.builder_and_evaluation import evaluation
 
+import sys
+print(sys.executable)
 
 load_dotenv()
 

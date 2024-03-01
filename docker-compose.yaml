@@ -1,13 +1,49 @@
 version: '3.9'
 
 services:
-  api:
-    build: .
+  mysql:
+    build:
+      context: ./backend  # Path to the directory containing your Dockerfile
+      dockerfile: db.Dockerfile  # Name of your Dockerfile
+    restart: always
+    volumes:
+      - ./mysql-data:/var/lib/mysql
     ports:
-    - "8081:8081"
-    container_name: backend
-  react:
-    build: ./frontends/web
+      - "33062:3306"  # Expose MySQL's port
+
+  backend1:
+    build: ./api  # Path to the Dockerfile for backend #1
+    restart: always
     ports:
-    - "3000:3000"
-    container_name: frontend
+      - "5001:8081"  # Expose backend's port
+    # network_mode: host # Key change here
+    env_file:
+      - api/.env
+    depends_on:
+      - mysql
+
+  backend2:
+    build: ./backend  # Path to the Dockerfile for backend #2
+    restart: always
+    ports:
+      - "5002:8000"  # Expose backend's port
+    # network_mode: host # Key change here
+    env_file:
+      - backend/.env
+    depends_on:
+      - mysql
+
+  frontend:
+    build: ./frontends/web  
+    restart: always
+    ports:
+      - "5003:3000"  # Expose frontend's port 
+    environment:
+    - REACT_APP_API_HOST=http://backend1:8081
+    - REACT_APP_API_HOST2=http://backend2:8000
+    - REACT_APP_WS_HOST=ws://backend2:8000
+    - REACT_APP_ENABLE_DYNABOARD=false
+    - HTTPS=false
+    depends_on:
+      - backend1
+      - backend2

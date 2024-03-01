@@ -11,3 +11,6 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+dynaenv/
+dynaenv_backend/
+mysql-data/

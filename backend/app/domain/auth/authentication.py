@@ -20,6 +20,8 @@ from app.infrastructure.repositories.taskuserpermission import (
     TaskUserPermissionRepository,
 )
 
+import sys
+print(sys.executable)
 
 class LoginService:
     def __init__(self) -> None:
