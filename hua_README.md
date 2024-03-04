@@ -105,3 +105,18 @@ To stop the services, run:
 ```bash
 docker-compose down
 ```
+
+# MinIO Object Storage for Container
+
+This project uses MinIO as an object storage server. MinIO is an open-source object storage server that is compatible with Amazon S3. It is used to store the data for the project.
+
+    mkdir -p ~/minio/data
+
+    docker run \
+    -p 9000:9000 \
+    -p 9001:9001 \
+    --name minio \
+    -v /media/gfragi/data/BarraCuda/minio/data:/data \
+    -e "MINIO_ROOT_USER=ROOTNAME" \
+    -e "MINIO_ROOT_PASSWORD=CHANGEME123" \
+    quay.io/minio/minio server /data --console-address ":9001"
