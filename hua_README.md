@@ -120,3 +120,11 @@ This project uses MinIO as an object storage server. MinIO is an open-source obj
     -e "MINIO_ROOT_USER=ROOTNAME" \
     -e "MINIO_ROOT_PASSWORD=CHANGEME123" \
     quay.io/minio/minio server /data --console-address ":9001"
+
+
+# Dynalab 2.0
+
+# Email Configuration
+SMTP_HOST=sandbox.smtp.mailtrap.io
+SMTP_USER=ea14011e661de7
+SMTP_SECRET=7f91523fe1c2fd
