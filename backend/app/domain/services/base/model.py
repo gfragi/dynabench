@@ -59,8 +59,9 @@ class ModelService:
             aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
             region_name=os.getenv("AWS_REGION"),
         )
-        self.s3 = self.session.client("s3")
+        self.s3 = self.session.client("s5")
         self.s3_bucket = os.getenv("AWS_S3_BUCKET")
+        print(f'Using S3 bucket: {self.s3_bucket}')
         self.email_helper = EmailHelper()
         self.providers = {
             "openai": OpenAIProvider(),
@@ -492,6 +493,6 @@ class ModelService:
         return amount_of_models_uploaded_in_hr_diff
 
     def get_dynalab_model(self, task_code: str):
-        bucket = "https://models-dynalab.s3.eu-west-3.amazonaws.com"
+        bucket = "http://localhost:9000/humaine"
         dynalab_link = f"{bucket}/{task_code}/dynalab-base-{task_code}.zip"
         return dynalab_link

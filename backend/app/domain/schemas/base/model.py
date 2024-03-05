@@ -39,13 +39,14 @@ class ModelInTheLoopRequest(BaseModel):
 class UploadModelToS3AndEvaluateRequest(BaseModel):
     model_name: Optional[str]
     description: Optional[str]
-    num_paramaters: Optional[float]
+    num_paramaters: Optional[int]
     languages: Optional[str]
     license: Optional[str]
     file_name: str
     user_id: int
     task_code: str
     file_to_upload: UploadFile = File(...)
+    print(file_to_upload, "file_to_upload")
 
 
 @form_body
